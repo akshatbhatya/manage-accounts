@@ -16,7 +16,7 @@ function Login() {
 
     let [value, setvalue] = useState(intialState);
 
-    let [user, setUser] = useState(true)
+    let [user, setUser] = useState(false)
 
     let [error,setError] = useState(null)
 
@@ -75,7 +75,7 @@ function Login() {
                             onChange={changehandle} name="Password" />
                     </label>
 
-                  <p>{error}</p>
+                  <p className="text-red-900 font-medium capitalize text-left">{error}</p>
                     <p className="text-green-900 cursor-pointer capitalize" onClick={() => setUser(!user)}>{user ? "If user / Log In Now" : "if not user /register now"}</p>
 
                     <button className="bg-green-600 px-3 py-2 rounded-sm text-white">{user?"Sign Up":"Log In"}</button>
