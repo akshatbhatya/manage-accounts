@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Validation from "./Validation";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../Firebase";
 
 function Login() {
-    
+
 
     let intialState = {
         useName: "",
@@ -18,20 +20,66 @@ function Login() {
 
     let [user, setUser] = useState(false)
 
-    let [error,setError] = useState(null)
+    let [error, setError] = useState(null)
 
     let changehandle = (e) => {
         let target = e.target;
         setvalue((prev) => ({ ...prev, [target.name]: target.value }))
-        
+
 
     }
 
-    let onSubmit=(e)=>{
+    let onSubmit = (e) => {
         e.preventDefault();
-         let message=Validation(value.email,value.Password);
-         setError(message)
+        let message = Validation(value.email, value.Password);
+        setError(message)
+
+        if (message) return
+
+        if (user) {
+
+            createUserWithEmailAndPassword(auth, value.email, value.Password)
+                .then((userCredential) => {
+                    // Signed up 
+                    const user = userCredential.user;
+                    console.log(user);
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setError(errorMessage)
+                    // ..
+                });
+
+        } else {
+            // sign in 
+            signInWithEmailAndPassword(auth, value.email, value.Password)
+                .then((userCredential) => {
+                    // Signed in 
+                    const user = userCredential.user;
+                    console.log(user);
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setError(errorMessage)
+                });
+
+        }
+
+
+
     }
+
+    // authentication
+
+
+
+
+
+
     return (
         <>
 
@@ -75,10 +123,10 @@ function Login() {
                             onChange={changehandle} name="Password" />
                     </label>
 
-                  <p className="text-red-900 font-medium capitalize text-left">{error}</p>
+                    <p className="text-red-900 font-medium capitalize text-left">{error}</p>
                     <p className="text-green-900 cursor-pointer capitalize" onClick={() => setUser(!user)}>{user ? "If user / Log In Now" : "if not user /register now"}</p>
 
-                    <button className="bg-green-600 px-3 py-2 rounded-sm text-white">{user?"Sign Up":"Log In"}</button>
+                    <button className="bg-green-600 px-3 py-2 rounded-sm text-white">{user ? "Sign Up" : "Log In"}</button>
 
 
 
